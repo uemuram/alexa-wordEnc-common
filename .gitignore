@@ -1,0 +1,3 @@
+.deploy/*
+layer/node_modules/*
+layer/package-lock.json
