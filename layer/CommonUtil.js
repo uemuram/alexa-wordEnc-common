@@ -9,9 +9,9 @@ module.exports = {
     },
     getSpeech: () => {
         let speech = new Speech()
-            .say("テスト")
+            .say("なにぬねの")
             .pause('1s')
-            .say('テストに');
+            .say('はひふへほ');
         return speech.ssml();
     }
 };
