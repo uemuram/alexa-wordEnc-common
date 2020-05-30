@@ -1,6 +1,6 @@
-## deploy common and assign to lanmbda functions 
+## assign latest layer to lanmbda functions 
 
-echo "[deploy start]"
+echo "[assign start]"
 
 LAYER_NAME=alexa-wordEnc-common
 FUNCTIONS=()
@@ -10,19 +10,11 @@ FUNCTIONS=("${FUNCTIONS[@]}" 'arn:aws:lambda:ap-northeast-1:704229799072:functio
 SCRIPT_DIR=$(cd $(dirname $0); pwd)
 
 
-echo "[build]"
-cd ${SCRIPT_DIR}/layer
-npm install
-rm ${SCRIPT_DIR}/.deploy/layer.zip
-zip -rq ${SCRIPT_DIR}/.deploy/layer.zip ./*
-
-
-echo "[deploy]"
-mkdir -p ${SCRIPT_DIR}/.deploy
-cd ${SCRIPT_DIR}/.deploy
-layer=`aws lambda publish-layer-version --layer-name ${LAYER_NAME} --zip-file fileb://layer.zip --compatible-runtimes nodejs10.x --output text --query LayerVersionArn`
-echo "deploy ${layer}"
-
+echo "[get latest]"
+latest=`aws lambda list-layer-versions --layer-name ${LAYER_NAME} --query 'LayerVersions[*].{Version:Version}' --output text|sort -gr|head -1`
+layer=`aws lambda get-layer-version --layer-name ${LAYER_NAME} --version-number ${latest} --query 'LayerVersionArn' --output text`
+echo ${latest}
+echo ${layer}
 
 echo "[update function]"
 for function in "${FUNCTIONS[@]}"
@@ -32,4 +24,4 @@ do
 done
 
 
-echo "[deploy finish]"
+echo "[assign finish]"
