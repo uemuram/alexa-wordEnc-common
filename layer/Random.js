@@ -1,4 +1,5 @@
 class Random {
+    // 種を指定して乱数を生成するクラス(XorShiftを利用)
     constructor(seed) {
         this.x = 123456789;
         this.y = 362436069;
@@ -7,7 +8,7 @@ class Random {
         this.w = 100000000 + seed;
     }
 
-    // XorShift
+    // 次の乱数を生成
     next() {
         let t;
 
