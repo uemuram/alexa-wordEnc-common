@@ -48,34 +48,45 @@ class CommonUtil {
         return newArray;
     }
 
+    // レターペアから対応する単語を取り出す
+    getWordFromLetterPair(letter1, letter2, kanas) {
+        let idx1 = kanas.indexOf(letter1);
+        let idx2 = kanas.indexOf(letter2);
+        let wordIdx = idx1 * kanas.length + idx2;
+        return c.wordList[wordIdx];
+    }
+
     // 指定されたメッセージを暗号化する
     encrypt(key, message) {
         console.log("<暗号化実施> [鍵:" + key + "][メッセージ:" + message + "]");
 
-        // 利用するかな一覧を、鍵を利用してシャッフルして配列に入れる
-        console.log("シャッフル前かな一覧 :" + c.kanaList);
-        let kanas = this.shuffle(key, c.kanaList);
+        // ランダム要素を入れるためのランダムキーを発行
+        let key2 = Math.floor(Math.random() * c.wordList.length);
+        console.log("固有キー:" + key2 + "(" + c.wordList[key2] + ")");
+
+        // 利用するかな一覧を、鍵を利用してシャッフルして配列に入れる。
+        // その際終端文字(☆)も追加する
+        let kanas = this.shuffle(key + key2, c.kanaList.concat(['☆']));
         console.log("シャッフル後かな一覧 :" + kanas);
 
-        return ["aaa", "bbb", "ccc"];
-    }
+        // メッセージの一番最後に終端文字を付ける。
+        // ただし、全体が偶数になるように必要なら最後に一文字加える
+        message += '☆';
+        if (message.length % 2 == 1) {
+            message += c.kanaList[Math.floor(Math.random() * c.kanaList.length)]
+        }
+        console.log("暗号化直前メッセージ:" + message);
 
-
-    getHello1() {
-        return 'test5';
+        // 暗号化実施
+        // 最初の一つは固有キー
+        let encryptWords = [c.wordList[key2]];
+        for (let i = 0; i < message.length; i += 2) {
+            let encryptWord = this.getWordFromLetterPair(message[i], message[i + 1], kanas);
+            console.log("単語生成:" + message[i] + message[i + 1] + "->" + encryptWord);
+            encryptWords = encryptWords.concat(encryptWord);
+        }
+        return encryptWords;
     }
-    getHello2() {
-        return 'test6';
-    }
-    getSpeech() {
-        let speech = new Speech()
-            .say("なにぬねの")
-            .say(this.getHello2())
-            .pause('1s')
-            .say('はひふへほ');
-        return speech.ssml();
-    }
-
 }
 
 module.exports = CommonUtil;
