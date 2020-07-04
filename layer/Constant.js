@@ -2,8 +2,20 @@ class Constant {
 
     constructor() {
 
+        // 暗号化可能な文字数の上限(偶数を設定すること)
+        this.ENCRYPT_MESSAGE_LENGTH_LIMIT = 100;
+
+        // 暗号化キーの指定がなかった場合のデフォルト値
+        this.DEFAULT_RANDOMKEY = 10000;
+
         // 乱数用のキー値(指定された鍵にキー値を足して使う)
         this.RANDOMKEY_ADD_KANA_SHUFFLE = 10000;
+
+        // --- 導出項目 ---
+        // 暗号化に使う単語数の上限(文字数/2)
+        this.ENCRYPT_WORD_NUM_LIMIT = this.ENCRYPT_MESSAGE_LENGTH_LIMIT / 2;
+
+
 
         // 利用するかなの一覧
         this.kanaList = [
