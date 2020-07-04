@@ -60,26 +60,33 @@ class CommonUtil {
     encrypt(key, message) {
         console.log("<暗号化実施> [鍵:" + key + "][メッセージ:" + message + "]");
 
-        // ランダム要素を入れるためのランダムキーを発行
-        let key2 = Math.floor(Math.random() * c.wordList.length);
-        console.log("固有キー:" + key2 + "(" + c.wordList[key2] + ")");
+        // メッセージを暗号化するのに必要な単語の数(メッセージ長/2)
+        let wordCount = Math.ceil(message.length / 2);
+
+        // ランダム要素を入れるためのランダムキー(内部キー)を発行
+        let keyNum = Math.floor(c.wordList.length / c.ENCRYPT_WORD_NUM_LIMIT);
+        let key2 = Math.floor(Math.random() * keyNum);
+
+        // 内部キーとメッセージ長によって決まる単語
+        let innerKeyIdx = key2 * c.ENCRYPT_WORD_NUM_LIMIT + wordCount;
+        let innerKeyWord = c.wordList[innerKeyIdx];
+        console.log("内部キー:" + key2);
+        console.log("内部キーと長さ保存用単語:" + innerKeyWord + "(" + innerKeyIdx + ")")
 
         // 利用するかな一覧を、鍵を利用してシャッフルして配列に入れる。
-        // その際終端文字(☆)も追加する
+        // その際調整用文字(☆)も追加する
         let kanas = this.shuffle(key + key2, c.kanaList.concat(['☆']));
         console.log("シャッフル後かな一覧 :" + kanas);
 
-        // メッセージの一番最後に終端文字を付ける。
-        // ただし、全体が偶数になるように必要なら最後に一文字加える
-        message += '☆';
+        // 全体が偶数になるように必要なら最後に調整用文字を加える
         if (message.length % 2 == 1) {
-            message += c.kanaList[Math.floor(Math.random() * c.kanaList.length)]
+            message += '☆'
         }
         console.log("暗号化直前メッセージ:" + message);
 
         // 暗号化実施
         // 最初の一つは固有キー
-        let encryptWords = [c.wordList[key2]];
+        let encryptWords = [innerKeyWord];
         for (let i = 0; i < message.length; i += 2) {
             let encryptWord = this.getWordFromLetterPair(message[i], message[i + 1], kanas);
             console.log("単語生成:" + message[i] + message[i + 1] + "->" + encryptWord);
