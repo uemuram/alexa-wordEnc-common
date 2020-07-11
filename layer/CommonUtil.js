@@ -56,6 +56,13 @@ class CommonUtil {
         return c.wordList[wordIdx];
     }
 
+    // 単語のIDより、内部キーと単語の数を求める
+    getInnerKeyAndWordCount(wordId) {
+        let innerKey = Math.floor(wordId / c.ENCRYPT_WORD_NUM_LIMIT);
+        let wordCount = wordId % c.ENCRYPT_WORD_NUM_LIMIT + 1;
+        return { "innerKey": innerKey, "wordCount": wordCount }
+    }
+
     // 指定されたメッセージを暗号化する
     encrypt(key, message) {
         console.log("<暗号化実施> [鍵:" + key + "][メッセージ:" + message + "]");
