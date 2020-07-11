@@ -56,11 +56,18 @@ class CommonUtil {
         return c.wordList[wordIdx];
     }
 
+    // 単語インデックスから対応するレターペアを取り出す
+    getLetterPairFromWordId(wordId, kanas) {
+        let idx1 = Math.floor(wordId / kanas.length);
+        let idx2 = wordId % kanas.length;
+        return kanas[idx1] + kanas[idx2];
+    }
+
     // 単語のIDより、内部キーと単語の数を求める
-    getInnerKeyAndWordCount(wordId) {
+    getInnerKeyAndTotalWordCount(wordId) {
         let innerKey = Math.floor(wordId / c.ENCRYPT_WORD_NUM_LIMIT);
-        let wordCount = wordId % c.ENCRYPT_WORD_NUM_LIMIT + 1;
-        return { "innerKey": innerKey, "wordCount": wordCount }
+        let totalWordCount = wordId % c.ENCRYPT_WORD_NUM_LIMIT + 1;
+        return { "innerKey": innerKey, "totalWordCount": totalWordCount }
     }
 
     // 指定されたメッセージを暗号化する
@@ -72,17 +79,17 @@ class CommonUtil {
 
         // ランダム要素を入れるためのランダムキー(内部キー)を発行
         let keyNum = Math.floor(c.wordList.length / c.ENCRYPT_WORD_NUM_LIMIT);
-        let key2 = Math.floor(Math.random() * keyNum);
+        let innerKey = Math.floor(Math.random() * keyNum);
 
         // 内部キーとメッセージ長によって決まる単語
-        let innerKeyIdx = key2 * c.ENCRYPT_WORD_NUM_LIMIT + wordCount;
+        let innerKeyIdx = innerKey * c.ENCRYPT_WORD_NUM_LIMIT + wordCount;
         let innerKeyWord = c.wordList[innerKeyIdx];
-        console.log("内部キー:" + key2);
+        console.log("内部キー:" + innerKey);
         console.log("内部キーと長さ保存用単語:" + innerKeyWord + "(" + innerKeyIdx + ")")
 
         // 利用するかな一覧を、鍵を利用してシャッフルして配列に入れる。
         // その際調整用文字(☆)も追加する
-        let kanas = this.shuffle(key + key2, c.kanaList.concat(['☆']));
+        let kanas = this.shuffle(key + innerKey, c.kanaList.concat(['☆']));
         console.log("シャッフル後かな一覧 :" + kanas);
 
         // 全体が偶数になるように必要なら最後に調整用文字を加える
@@ -101,6 +108,37 @@ class CommonUtil {
         }
         return encryptWords;
     }
+
+    // メッセージを複合化する
+    decrypt(key, wordIds) {
+        console.log("<複合化実施> [鍵:" + key + "][単語ID:" + wordIds + "]");
+
+        // 1つ目の単語を使って内部キーを抽出する
+        let innerKey = this.getInnerKeyAndTotalWordCount(wordIds[0]).innerKey;
+        console.log("内部キー:" + innerKey);
+
+        // 利用するかな一覧を、鍵を利用してシャッフルして配列に入れる。(暗号化時と同じロジックを使用)
+        // その際調整用文字(☆)も追加する
+        let kanas = this.shuffle(key + innerKey, c.kanaList.concat(['☆']));
+        console.log("シャッフル後かな一覧 :" + kanas);
+
+        // 複合化実施
+        let decryptMessage = "";
+        for (let i = 1; i < wordIds.length; i++) {
+            let wordId = wordIds[i];
+            let letterPair = this.getLetterPairFromWordId(wordId, kanas);
+            console.log("解読:" + wordId + "(" + c.wordList[wordId] + ")->" + letterPair);
+            decryptMessage += letterPair;
+        }
+        console.log("解読済みメッセージ:" + decryptMessage);
+
+        // 末尾が調整用文字(☆)だった場合は除去する
+        decryptMessage = decryptMessage.replace(/☆/g, '');
+        console.log("解読済みメッセージ(終端文字除去):" + decryptMessage);
+
+        return decryptMessage;
+    }
+
 }
 
 module.exports = CommonUtil;
