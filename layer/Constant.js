@@ -11,10 +11,16 @@ class Constant {
         // 乱数用のキー値(指定された鍵にキー値を足して使う)
         this.RANDOMKEY_ADD_KANA_SHUFFLE = 10000;
 
+        // 「いいえ」扱いにするメッセージ
+        this.NO_MESSAGES = [
+            'いいえ',
+            'いえ',
+            '家'
+        ];
+
         // --- 導出項目 ---
         // 暗号化に使う単語数の上限(文字数/2)
         this.ENCRYPT_WORD_NUM_LIMIT = this.ENCRYPT_MESSAGE_LENGTH_LIMIT / 2;
-
 
 
         // 利用するかなの一覧
