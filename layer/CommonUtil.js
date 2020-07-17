@@ -48,12 +48,11 @@ class CommonUtil {
         return newArray;
     }
 
-    // レターペアから対応する単語を取り出す
+    // レターペアから対応する単語のインデックスを取り出す
     getWordFromLetterPair(letter1, letter2, kanas) {
         let idx1 = kanas.indexOf(letter1);
         let idx2 = kanas.indexOf(letter2);
-        let wordIdx = idx1 * kanas.length + idx2;
-        return c.wordList[wordIdx];
+        return c.wordList[idx1 * kanas.length + idx2];
     }
 
     // 単語インデックスから対応するレターペアを取り出す
@@ -80,10 +79,10 @@ class CommonUtil {
         // ランダム要素を入れるためのランダムキー(内部キー)を発行
         let keyNum = Math.floor(c.wordList.length / c.ENCRYPT_WORD_NUM_LIMIT);
         let innerKey = Math.floor(Math.random() * keyNum);
-
+        
         // 内部キーとメッセージ長によって決まる単語
         let innerKeyIdx = innerKey * c.ENCRYPT_WORD_NUM_LIMIT + wordCount;
-        let innerKeyWord = c.wordList[innerKeyIdx];
+        let innerKeyWord = c.wordList[innerKeyIdx].word;
         console.log("内部キー:" + innerKey);
         console.log("内部キーと長さ保存用単語:" + innerKeyWord + "(" + innerKeyIdx + ")")
 
@@ -100,10 +99,10 @@ class CommonUtil {
 
         // 暗号化実施
         // 最初の一つは固有キー
-        let encryptWords = [innerKeyWord];
+        let encryptWords = [c.wordList[innerKeyIdx]];
         for (let i = 0; i < message.length; i += 2) {
             let encryptWord = this.getWordFromLetterPair(message[i], message[i + 1], kanas);
-            console.log("単語生成:" + message[i] + message[i + 1] + "->" + encryptWord);
+            console.log("単語生成:" + message[i] + message[i + 1] + "->" + encryptWord.word);
             encryptWords = encryptWords.concat(encryptWord);
         }
         return encryptWords;
