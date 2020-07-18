@@ -79,7 +79,7 @@ class CommonUtil {
         // ランダム要素を入れるためのランダムキー(内部キー)を発行
         let keyNum = Math.floor(c.wordList.length / c.ENCRYPT_WORD_NUM_LIMIT);
         let innerKey = Math.floor(Math.random() * keyNum);
-        
+
         // 内部キーとメッセージ長によって決まる単語
         let innerKeyIdx = innerKey * c.ENCRYPT_WORD_NUM_LIMIT + wordCount;
         let innerKeyWord = c.wordList[innerKeyIdx].word;
@@ -138,6 +138,42 @@ class CommonUtil {
         return decryptMessage;
     }
 
+    // handlerInputから単語を取り出す
+    getWordFromHandler(handlerInput) {
+        // スロット情報の取り出し
+        let wordSlot = handlerInput.requestEnvelope.request.intent.slots.Word.resolutions;
+        if (!wordSlot) {
+            console.log("slot取得失敗");
+            // そもそもスロット情報が取れなかった場合
+            return {
+                "getValue": null,
+                "matchValue": null,
+                "matchId": null
+            };
+        }
+
+        // ステータスチェック
+        let statusCode = wordSlot.resolutionsPerAuthority[0].status.code;
+        console.log("単語取得ステータス:" + statusCode);
+        let getValue = handlerInput.requestEnvelope.request.intent.slots.Word.value;
+        console.log("単語取得Value:" + getValue);
+
+        // 登録済み単語にマッチしなかった場合
+        if (statusCode !== 'ER_SUCCESS_MATCH') {
+            return {
+                "getValue": getValue,
+                "matchValue": null,
+                "matchId": null
+            }
+        }
+
+        // 登録済み単語にマッチした場合
+        return {
+            "getValue": getValue,
+            "matchValue": wordSlot.resolutionsPerAuthority[0].values[0].value.name,
+            "matchId": parseInt(wordSlot.resolutionsPerAuthority[0].values[0].value.id)
+        }
+    }
 }
 
 module.exports = CommonUtil;
