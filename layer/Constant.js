@@ -5203,7 +5203,7 @@ class Constant {
             {'word':'干潟','yomi':'ひがた','use_yomi':false},
             {'word':'光ファイバー','yomi':'ひかりふぁいばー','use_yomi':false},
             {'word':'ピカルディの三度','yomi':'ピカルディのさんど','use_yomi':false},
-            {'word':'彼岸花','yomi':'ひがんはな','use_yomi':false},
+            {'word':'彼岸花','yomi':'ひがんばな','use_yomi':true},
             {'word':'ヒキガエル','yomi':'ヒキガエル','use_yomi':false},
             {'word':'引き出物','yomi':'ひきでもの','use_yomi':false},
             {'word':'飛脚','yomi':'ひきゃく','use_yomi':false},
