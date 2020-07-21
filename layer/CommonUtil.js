@@ -174,6 +174,20 @@ class CommonUtil {
             "matchId": parseInt(wordSlot.resolutionsPerAuthority[0].values[0].value.id)
         }
     }
+
+    // 不適切な単語が含まれているかチェック
+    isInappropriate(str) {
+        console.log("不適切単語チェック:" + str);
+        for (let i = 0; i < c.INAPPROPRIATE_WORDS.length; i++) {
+            let inappropriateWord = c.INAPPROPRIATE_WORDS[i];
+            if (str.indexOf(inappropriateWord) >= 0) {
+                console.log("不適切単語を含む: " + inappropriateWord);
+                return true;
+            }
+        }
+        console.log("不適切単語なし");
+        return false;
+    }
 }
 
 module.exports = CommonUtil;
