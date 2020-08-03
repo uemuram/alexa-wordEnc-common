@@ -23,7 +23,8 @@ class Constant {
         this.NO_MESSAGES = [
             'いいえ',
             'いえ',
-            '家'
+            '家',
+            '五重塔'
         ];
 
         // --- 導出項目 ---
