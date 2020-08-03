@@ -126,7 +126,7 @@ class CommonUtil {
         for (let i = 1; i < wordIds.length; i++) {
             let wordId = wordIds[i];
             let letterPair = this.getLetterPairFromWordId(wordId, kanas);
-            console.log("解読:" + wordId + "(" + c.wordList[wordId] + ")->" + letterPair);
+            console.log("解読:" + wordId + "(" + c.wordList[wordId].word + ")->" + letterPair);
             decryptMessage += letterPair;
         }
         console.log("解読済みメッセージ:" + decryptMessage);
